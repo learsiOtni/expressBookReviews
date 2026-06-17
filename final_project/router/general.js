@@ -25,31 +25,59 @@ public_users.post("/register", (req,res) => {
   return res.status(404).json({message: "Unable to register user!"});
 });
 
+const getBooks = () => {
+    return new Promise((resolve, reject) => {
+        setTimeout( () => {
+            resolve(books);
+        }, 1000)
+    })
+}
+
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  return res.status(300).json(JSON.stringify(books, null, 4));
+public_users.get('/',async function (req, res) {
+  return res.status(300).json(JSON.stringify(await getBooks(), null, 4));
 });
+
+const getBookByISBN = (isbn) => {
+    return new Promise((resolve, reject) => {
+        setTimeout( () => {
+            resolve(books[isbn]);
+        }, 1000)
+    })
+}
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn',async function (req, res) {
   const isbn = req.params.isbn
-  return res.status(300).json(books[isbn]);
+  return res.status(300).json(await getBookByISBN(isbn));
  });
   
+ const getBooksByAuthor = (author) => {
+    return new Promise((resolve, reject) => {
+        setTimeout( () => {
+            const filteredArray = Object.values(books).filter( book => book.author === author);
+            resolve(filteredArray);
+        }, 1000)
+    })
+}
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
+public_users.get('/author/:author',async function (req, res) {
   const author = req.params.author
-    const filteredArray = Object.values(books).filter( book => book.author === author);
-
-  return res.status(300).json(filteredArray);
+  return res.status(300).json(await getBooksByAuthor(author));
 });
 
+const getBookByTitle = (title) => {
+    return new Promise((resolve, reject) => {
+        setTimeout( () => {
+            const filteredArray = Object.values(books).filter( book => book.title.replaceAll(' ', '') === title)
+            resolve(filteredArray);
+        }, 1000)
+    })
+}
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+public_users.get('/title/:title',async function (req, res) {
     const title = req.params.title
-    const filteredArray = Object.values(books).filter( book => book.title.replaceAll(' ', '') === title);
-
-  return res.status(300).json(filteredArray);
+  return res.status(300).json(await getBookByTitle(title));
 });
 
 //  Get book review
