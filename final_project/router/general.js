@@ -35,7 +35,12 @@ const getBooks = () => {
 
 // Get the book list available in the shop
 public_users.get('/',async function (req, res) {
-  return res.status(300).json(JSON.stringify(await getBooks(), null, 4));
+    try {
+        return res.status(300).json(JSON.stringify(await getBooks(), null, 4));
+    } catch(error) {
+        return res.status(404).json({ error: error})
+    }
+  
 });
 
 const getBookByISBN = (isbn) => {
@@ -48,8 +53,12 @@ const getBookByISBN = (isbn) => {
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',async function (req, res) {
-  const isbn = req.params.isbn
-  return res.status(300).json(await getBookByISBN(isbn));
+    try {
+        const isbn = req.params.isbn
+        return res.status(300).json(await getBookByISBN(isbn));
+    } catch(error) {
+        return res.status(404).json({ error: error})
+    }
  });
   
  const getBooksByAuthor = (author) => {
@@ -62,8 +71,12 @@ public_users.get('/isbn/:isbn',async function (req, res) {
 }
 // Get book details based on author
 public_users.get('/author/:author',async function (req, res) {
-  const author = req.params.author
-  return res.status(300).json(await getBooksByAuthor(author));
+  try {
+        const author = req.params.author
+        return res.status(300).json(await getBooksByAuthor(author));
+    } catch(error) {
+        return res.status(404).json({ error: error})
+    }
 });
 
 const getBookByTitle = (title) => {
@@ -76,8 +89,12 @@ const getBookByTitle = (title) => {
 }
 // Get all books based on title
 public_users.get('/title/:title',async function (req, res) {
-    const title = req.params.title
-  return res.status(300).json(await getBookByTitle(title));
+  try {
+        const title = req.params.title
+        return res.status(300).json(await getBookByTitle(title));
+    } catch(error) {
+        return res.status(404).json({ error: error})
+    }
 });
 
 //  Get book review

@@ -46,7 +46,7 @@ regd_users.post("/login", (req,res) => {
     req.session.authorization = {
         accessToken, username
     }
-    return res.status(200).send("User successfully logged in.")
+    return res.status(200).send({message: `User ${username} successfully logged in.`})
   } else {
     return res.status(208).json({ message: `Invalid login. Check ${username} and ${password} and ${JSON.stringify(users)}`});
   }
@@ -64,22 +64,24 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
   if (book && bookReviews[username]) {
     books[isbn].reviews[username] = review;
-    return res.status(300).json({ message: "Review successfully edited"});
+    return res.status(300).json({ message: "Review successfully edited", reviews: books[isbn].reviews});
   } else {
     books[isbn].reviews = {...books[isbn].reviews, [username]: review}
-    return res.status(300).json({ message: "Review successfully added"});
+    return res.status(300).json({ message: "Review successfully added", reviews: books[isbn].reviews});
   }
 });
 
 regd_users.delete("/auth/review/:isbn", (req, res) => {
     const username = req.session.authorization.username;
     const isbn = req.params.isbn;
+    
 
     let deletedReview = Object.keys(books[isbn].reviews).filter( key => key === username);
 
     if (deletedReview.length > 0) {
+        const review = books[isbn].reviews[username];
         books[isbn].reviews[username] = null;
-        return res.status(300).json({ message: "Review successfully deleted"});
+        return res.status(300).json({ message: `Review ${review} by $ successfully deleted`});
     } else {
         return res.status(401).json({ message: "Unauthorised. Unable to delete"});
     }
