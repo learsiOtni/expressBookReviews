@@ -54,9 +54,36 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const review = req.query.review;
+  const username = req.session.authorization.username;
+  const isbn = req.params.isbn;
+  const book = books[isbn];
+  const bookReviews = book.reviews;
+
+  //return res.status(300).json({ message: `${review} ${username} ${JSON.stringify(book)} ${JSON.stringify(bookReviews)}`});
+
+  if (book && bookReviews[username]) {
+    books[isbn].reviews[username] = review;
+    return res.status(300).json({ message: "Review successfully edited"});
+  } else {
+    books[isbn].reviews = {...books[isbn].reviews, [username]: review}
+    return res.status(300).json({ message: "Review successfully added"});
+  }
 });
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const username = req.session.authorization.username;
+    const isbn = req.params.isbn;
+
+    let deletedReview = Object.keys(books[isbn].reviews).filter( key => key === username);
+
+    if (deletedReview.length > 0) {
+        books[isbn].reviews[username] = null;
+        return res.status(300).json({ message: "Review successfully deleted"});
+    } else {
+        return res.status(401).json({ message: "Unauthorised. Unable to delete"});
+    }
+})
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
