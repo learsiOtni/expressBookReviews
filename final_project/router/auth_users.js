@@ -81,7 +81,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     if (deletedReview.length > 0) {
         const review = books[isbn].reviews[username];
         books[isbn].reviews[username] = null;
-        return res.status(300).json({ message: `Review ${review} by $ successfully deleted`});
+        return res.status(300).json({ message: `Review ${review} by ${username} successfully deleted`});
     } else {
         return res.status(401).json({ message: "Unauthorised. Unable to delete"});
     }
