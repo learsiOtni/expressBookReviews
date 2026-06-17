@@ -28,7 +28,12 @@ public_users.post("/register", (req,res) => {
 const getBooks = () => {
     return new Promise((resolve, reject) => {
         setTimeout( () => {
-            resolve(books);
+            if (Object.keys(books).length > 0) {
+                resolve(books);
+            } else {
+                reject("No Books found!")
+            }
+           
         }, 1000)
     })
 }
@@ -46,7 +51,12 @@ public_users.get('/',async function (req, res) {
 const getBookByISBN = (isbn) => {
     return new Promise((resolve, reject) => {
         setTimeout( () => {
-            resolve(books[isbn]);
+            if (books[isbn]) {
+                resolve(books[isbn]);
+            } else {
+                reject("No Book found!")
+            }
+            
         }, 1000)
     })
 }
@@ -65,7 +75,12 @@ public_users.get('/isbn/:isbn',async function (req, res) {
     return new Promise((resolve, reject) => {
         setTimeout( () => {
             const filteredArray = Object.values(books).filter( book => book.author === author);
-            resolve(filteredArray);
+
+            if (filteredArray.length > 0) {
+                resolve(filteredArray);
+            } else {
+                reject("No Book found!")
+            }
         }, 1000)
     })
 }
@@ -83,7 +98,12 @@ const getBookByTitle = (title) => {
     return new Promise((resolve, reject) => {
         setTimeout( () => {
             const filteredArray = Object.values(books).filter( book => book.title.replaceAll(' ', '') === title)
-            resolve(filteredArray);
+
+            if (filteredArray.length > 0) {
+                resolve(filteredArray);
+            } else {
+                reject("No Book found!")
+            }
         }, 1000)
     })
 }
